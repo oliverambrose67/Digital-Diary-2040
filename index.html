@@ -630,17 +630,15 @@
                 </div>
 
                 <!-- Video Player Container -->
-                <div class="relative bg-black/50 border border-cyan-900 rounded p-1">
-                    <!-- REPLACE VIDEO BELOW: Paste your video filename inside src="" -->
-                    <video controls class="w-full rounded border border-gray-800" poster="https://images.unsplash.com/photo-1531384441138-2736e62e0919?auto=format&fit=crop&q=80&w=800">
-                        <source src="Marcus Freeman_ A Record of Resistance (1).mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-
-                    <div class="mt-2 flex justify-between text-[10px] font-mono text-cyan-600">
-                        <span>STATUS: ENCRYPTED</span>
-                        <span>AUDIO: ENHANCED</span>
-                    </div>
+                <div class="relative bg-black/50 border border-cyan-900 rounded p-1 pb-[56.25%] h-0">
+                    <iframe 
+                        class="absolute top-0 left-0 w-full h-full rounded border border-gray-800"
+                        src="https://www.youtube.com/embed/PkxvgK9VKPM" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
 
                 <!-- TRANSCRIPT SECTION -->
