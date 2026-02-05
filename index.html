@@ -162,9 +162,64 @@
         .hidden-tab {
             display: none;
         }
+
+        /* Tech Vis Styles */
+        .tech-grid {
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .hud-crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 1px dashed var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+        }
+        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Splash Screen Animation */
+        .typing-effect {
+            border-right: 2px solid var(--neon-blue);
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-blue); }
+        }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="min-h-screen pb-20 overflow-hidden" id="main-body">
+
+    <!-- SPLASH SCREEN / ERROR POPUP -->
+    <div id="splash-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 text-center">
+        <!-- CRT Monitor Effect Overlay -->
+        <div class="absolute inset-0 pointer-events-none opacity-20" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00f3ff 4px);"></div>
+        
+        <div class="max-w-md w-full border border-red-500/50 p-8 rounded bg-gray-900/95 shadow-[0_0_50px_rgba(255,0,0,0.3)] relative z-10 backdrop-blur-sm">
+            <i class="fa-solid fa-triangle-exclamation text-6xl text-red-500 mb-6 animate-pulse"></i>
+            
+            <h2 class="text-3xl font-[Orbitron] text-white mb-6 glitch tracking-widest" data-text="SYSTEM WARNING">SYSTEM WARNING</h2>
+            
+            <div class="text-cyan-400 font-mono mb-8 text-lg leading-relaxed">
+                <p class="mb-2">Entering the future life of a police officer.</p>
+                <p class="text-white font-bold animate-pulse">Do you wish to continue?</p>
+            </div>
+            
+            <button onclick="enterSite()" class="bg-red-900/30 hover:bg-red-600/40 text-red-400 hover:text-white border border-red-500 px-8 py-4 rounded font-[Orbitron] tracking-widest transition duration-300 w-full hover:shadow-[0_0_20px_rgba(255,0,0,0.6)] group">
+                <span class="mr-2 group-hover:animate-pulse">></span> INITIALIZE UPLINK
+            </button>
+            
+            <div class="mt-4 text-[10px] text-gray-600 font-mono">
+                SECURE PROTOCOL v9.02 // CONNECTION UNSTABLE
+            </div>
+        </div>
+    </div>
 
     <!-- Header Section -->
     <header class="p-6 border-b border-cyan-900 bg-black sticky top-0 z-50 bg-opacity-90 backdrop-blur-md">
@@ -183,9 +238,11 @@
         </div>
 
         <!-- NEW TAB NAVIGATION -->
-        <nav class="flex justify-center gap-8 text-sm font-[Orbitron] tracking-widest">
+        <nav class="flex justify-center gap-8 text-sm font-[Orbitron] tracking-widest flex-wrap">
             <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn active px-4 py-2 hover:text-cyan-200">OFFICER PROFILE</button>
             <button onclick="switchTab('diary')" id="btn-diary" class="tab-btn px-4 py-2 hover:text-cyan-200">DIARY ARCHIVES</button>
+            <button onclick="switchTab('tools')" id="btn-tools" class="tab-btn px-4 py-2 hover:text-cyan-200">TOOLS & TECH</button>
+            <button onclick="switchTab('video')" id="btn-video" class="tab-btn px-4 py-2 hover:text-cyan-200">VIDEO LOG</button>
         </nav>
     </header>
 
@@ -264,7 +321,6 @@
         </div>
 
         <!-- TAB 2: Diary Entries (Initially Hidden) -->
-        <!-- Reduced max-width to 2xl to decrease width of entries -->
         <div id="diary-content" class="hidden-tab relative py-10 max-w-2xl mx-auto">
             <div class="absolute left-1/2 -translate-x-1/2 h-full w-px bg-gradient-to-b from-cyan-900 to-transparent z-0 hidden md:block"></div>
             
@@ -290,10 +346,9 @@
                         The department trains us to trust the system, but I don’t — not fully. That’s why I still keep my handwritten logbook. In 2040, policing isn’t about enforcing laws anymore — it’s about deciding when not to believe the machine.
                     </p>
                     
-                    <!-- Added max-w-sm and mx-auto to center and limit image width -->
                     <div class="mt-4 border border-cyan-800 p-2 bg-black/50 max-w-sm mx-auto">
                         <p class="text-xs text-cyan-600 mb-1">EVIDENCE: AR INTERFACE</p>
-                        <!-- REPLACE IMAGE BELOW -->
+                        <!-- REPLACE IMAGE BELOW: Paste your AR Glasses image address inside src="" -->
                         <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400" alt="AR Glasses Interface Sketch" class="w-full h-48 object-cover border border-cyan-900 opacity-80">
                     </div>
                 </div>
@@ -317,9 +372,8 @@
                     <p class="mt-2">
                         I use a handheld iPhone 32 equipped with an AI-based location tracker. But direct voice calls matter more to me than text or social feeds. Hearing a real human voice is one of the few ways I still feel confident that a connection is genuine, rather than the constant imitating voices of humans attempted by AI.
                     </p>
-                    <!-- Added max-w-sm and mx-auto to center and limit image width -->
                     <div class="mt-4 pt-4 border-t border-gray-400 max-w-sm mx-auto">
-                         <!-- REPLACE IMAGE BELOW -->
+                         <!-- REPLACE IMAGE BELOW: Paste your handwritten note image address inside src="" -->
                          <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&q=80&w=400" alt="Handwritten Logbook Scan" class="w-full shadow-lg border border-gray-700">
                     </div>
                 </div>
@@ -341,9 +395,8 @@
                     <div class="p-6 space-y-4">
                         <h4 class="text-xl font-bold text-white">COASTAL FLOODING CONFIRMED</h4>
                         
-                        <!-- Added max-w-sm and mx-auto to center and limit image width -->
                         <div class="my-4 max-w-sm mx-auto">
-                            <!-- REPLACE IMAGE BELOW -->
+                            <!-- REPLACE IMAGE BELOW: Paste your news headline image address inside src="" -->
                             <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400" alt="Fabricated News Headline" class="w-full rounded border border-red-900 opacity-90">
                         </div>
 
@@ -382,11 +435,269 @@
                         "Survival isn’t about having better technology. It’s about knowing when to step outside of it."
                      </p>
                      
-                     <!-- Added max-w-sm and mx-auto to center and limit image width -->
                      <div class="mt-4 max-w-sm mx-auto">
-                        <!-- REPLACE IMAGE BELOW -->
+                        <!-- REPLACE IMAGE BELOW: Paste your AI glitch image address inside src="" -->
                         <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=400" alt="AI Threat Overlay vs Handwritten Note" class="w-full rounded opacity-80 hover:opacity-100 transition">
                      </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TOOLS & TECH (Initially Hidden) -->
+        <div id="tools-content" class="hidden-tab max-w-4xl mx-auto py-10 space-y-20">
+            
+            <!-- Tool 1: Bodycam Glasses -->
+            <div>
+                <div class="flex items-center gap-4 mb-6 border-b border-cyan-800 pb-2">
+                    <i class="fa-solid fa-glasses text-3xl text-cyan-400"></i>
+                    <div>
+                        <h3 class="text-2xl font-[Orbitron] text-white">OCULI-99 AI GLASSES</h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest">Biometric Scanner // Heads-Up Display</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Visualization -->
+                    <div class="tech-grid border border-cyan-500/50 rounded-lg h-64 relative bg-black/80 overflow-hidden group">
+                        <!-- HUD Elements -->
+                        <div class="absolute top-2 left-2 text-[10px] text-green-400 font-mono animate-pulse">● REC [1080p AI ENHANCED]</div>
+                        <div class="absolute top-2 right-2 text-[10px] text-cyan-400 font-mono">BATTERY: 89%</div>
+                        <div class="absolute bottom-2 left-2 text-[10px] text-gray-400 font-mono">GPS: 34.0522° N, 118.2437° W</div>
+                        
+                        <!-- Center Focus (Crosshair) -->
+                        <div class="hud-crosshair"></div>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center opacity-0 group-hover:opacity-100 transition duration-300">
+                             <div class="text-red-500 font-bold tracking-widest text-xs bg-black/50 px-2">SCANNING TARGET...</div>
+                             <div class="text-cyan-300 text-[10px] mt-1">ID: UNKNOWN</div>
+                             <div class="text-cyan-300 text-[10px]">THREAT: LOW</div>
+                        </div>
+
+                        <!-- Scan Lines -->
+                        <div class="scan-line"></div>
+                    </div>
+
+                    <!-- Specs -->
+                    <div class="bg-gray-900/50 p-6 rounded border-l-2 border-cyan-500 text-sm text-gray-300">
+                        <ul class="space-y-4 font-mono">
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">OPTICS:</span>
+                                <span class="text-cyan-300">Thermal / Night Vision</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">AI MODEL:</span>
+                                <span class="text-cyan-300">Civilian-Behavior-v9.2</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">LATENCY:</span>
+                                <span class="text-cyan-300">0.02ms (Real-time)</span>
+                            </li>
+                        </ul>
+                        <p class="mt-4 pt-4 border-t border-gray-700 leading-relaxed">
+                            "They don't just see faces. They see heart rates, stress levels, and criminal records overlayed in real-time. Convenient, but invasive."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool 2: Patrol Car -->
+            <div>
+                <div class="flex items-center gap-4 mb-6 border-b border-cyan-800 pb-2">
+                    <i class="fa-solid fa-car-on text-3xl text-cyan-400"></i>
+                    <div>
+                        <h3 class="text-2xl font-[Orbitron] text-white">SENTINEL-X INTERCEPTOR</h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest">Autonomous Unit // Drone Carrier</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                     <!-- Visualization -->
+                     <div class="tech-grid border border-cyan-500/50 rounded-lg h-64 relative bg-black/80 flex items-center justify-center">
+                        <!-- Car Schematic placeholder logic -->
+                        <div class="text-center">
+                            <i class="fa-solid fa-car text-6xl text-gray-700 mb-2"></i>
+                            <div class="text-[10px] text-cyan-500 font-mono mt-2">SYSTEM STATUS: IDLE</div>
+                        </div>
+
+                        <!-- Dashboard Widgets -->
+                        <div class="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-2">
+                            <div class="bg-cyan-900/30 border border-cyan-700 p-2 rounded text-center">
+                                <div class="text-[8px] text-gray-400">AUTOPILOT</div>
+                                <div class="text-xs font-bold text-green-400">ACTIVE</div>
+                            </div>
+                            <div class="bg-cyan-900/30 border border-cyan-700 p-2 rounded text-center">
+                                <div class="text-[8px] text-gray-400">DRONES</div>
+                                <div class="text-xs font-bold text-cyan-400">2/2 RDY</div>
+                            </div>
+                            <div class="bg-cyan-900/30 border border-cyan-700 p-2 rounded text-center">
+                                <div class="text-[8px] text-gray-400">SPEED</div>
+                                <div class="text-xs font-bold text-white">0 MPH</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specs -->
+                    <div class="bg-gray-900/50 p-6 rounded border-l-2 border-cyan-500 text-sm text-gray-300">
+                        <ul class="space-y-4 font-mono">
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">CLASS:</span>
+                                <span class="text-cyan-300">L5 Fully Autonomous</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">ARMAMENT:</span>
+                                <span class="text-cyan-300">Non-Lethal Sonic Cannon</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-500">AI CORE:</span>
+                                <span class="text-cyan-300">CityGrid-Link™</span>
+                            </li>
+                        </ul>
+                        <p class="mt-4 pt-4 border-t border-gray-700 leading-relaxed">
+                            "I sit in the driver's seat out of habit, but the car decides the route. It launches drones to chase suspects before I even unbuckle."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tool 3: Modded iPhone -->
+            <div>
+                <div class="flex items-center gap-4 mb-6 border-b border-cyan-800 pb-2">
+                    <i class="fa-solid fa-mobile-screen-button text-3xl text-cyan-400"></i>
+                    <div>
+                        <h3 class="text-2xl font-[Orbitron] text-white">MODDED iPHONE 32</h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-widest">Encrypted Comms // Retro-Fitted</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Visualization -->
+                        <div class="tech-grid border border-cyan-500/50 rounded-lg h-64 relative bg-black/80 flex items-center justify-center overflow-hidden">
+                            
+                            <!-- Phone Frame -->
+                            <div class="border-2 border-gray-700 bg-gray-900 w-32 h-56 rounded-3xl relative flex flex-col items-center justify-center p-2 shadow-[0_0_15px_rgba(0,243,255,0.3)]">
+                                <!-- Screen -->
+                                <div class="bg-black w-full h-full rounded-2xl border border-gray-800 relative overflow-hidden flex flex-col items-center justify-center">
+                                    <i class="fa-solid fa-lock text-green-500 text-2xl mb-2"></i>
+                                    <div class="text-[8px] text-green-500 font-mono tracking-widest">ENCRYPTED</div>
+                                    <div class="w-16 h-8 flex items-center justify-center gap-1 mt-2">
+                                        <!-- Fake Waveform -->
+                                        <div class="w-1 h-3 bg-cyan-500 animate-pulse"></div>
+                                        <div class="w-1 h-5 bg-cyan-500 animate-pulse delay-75"></div>
+                                        <div class="w-1 h-2 bg-cyan-500 animate-pulse delay-150"></div>
+                                        <div class="w-1 h-4 bg-cyan-500 animate-pulse delay-100"></div>
+                                    </div>
+                                    <div class="absolute bottom-2 text-[6px] text-gray-500">NO CLOUD SYNC</div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Specs -->
+                        <div class="bg-gray-900/50 p-6 rounded border-l-2 border-cyan-500 text-sm text-gray-300">
+                            <ul class="space-y-4 font-mono">
+                                <li class="flex justify-between">
+                                    <span class="text-gray-500">MODEL:</span>
+                                    <span class="text-cyan-300">iPhone 32 (2038)</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-500">OS STATUS:</span>
+                                    <span class="text-cyan-300">Jailbroken / Air-Gapped</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span class="text-gray-500">MODS:</span>
+                                    <span class="text-cyan-300">HW Kill-Switch, Lidar Jammer</span>
+                                </li>
+                            </ul>
+                            <p class="mt-4 pt-4 border-t border-gray-700 leading-relaxed">
+                                "Old tech is safe tech. I stripped the AI chips out manually. It doesn't predict what I'm going to say; it just transmits my voice. That's a luxury these days."
+                            </p>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 4: VIDEO LOG (New Section) -->
+        <div id="video-content" class="hidden-tab max-w-4xl mx-auto py-10">
+            <div class="holo-card p-6 rounded-lg relative overflow-hidden">
+                <div class="flex items-center gap-4 mb-4 border-b border-cyan-800 pb-2">
+                    <i class="fa-solid fa-video text-2xl text-cyan-400 animate-pulse"></i>
+                    <h3 class="text-xl font-[Orbitron] text-white tracking-widest">VIDEO UPLINK // DAILY LOG</h3>
+                </div>
+                
+                <div class="text-sm text-gray-400 mb-4 font-mono">
+                    <p>Subject: Officer M. Freeman // Topic: Life in 2040</p>
+                    <p class="text-xs text-red-400">WARNING: UNFILTERED FOOTAGE</p>
+                </div>
+
+                <!-- Video Player Container -->
+                <div class="relative bg-black/50 border border-cyan-900 rounded p-1">
+                    <!-- REPLACE VIDEO BELOW: Paste your video filename inside src="" -->
+                    <video controls class="w-full rounded border border-gray-800" poster="https://images.unsplash.com/photo-1531384441138-2736e62e0919?auto=format&fit=crop&q=80&w=800">
+                        <source src="Marcus Freeman_A Record of Resistance (1).mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+
+                    <div class="mt-2 flex justify-between text-[10px] font-mono text-cyan-600">
+                        <span>STATUS: ENCRYPTED</span>
+                        <span>AUDIO: ENHANCED</span>
+                    </div>
+                </div>
+
+                <!-- TRANSCRIPT SECTION -->
+                <div class="mt-8 border-t border-cyan-900/50 pt-6">
+                    <h4 class="text-cyan-400 font-[Orbitron] mb-4 text-sm uppercase tracking-widest"><i class="fa-regular fa-file-lines mr-2"></i> Audio Transcript / Full Record</h4>
+                    
+                    <div class="h-96 overflow-y-auto bg-black/40 border border-cyan-900/30 p-6 rounded text-gray-300 font-mono text-sm leading-relaxed space-y-6 shadow-inner">
+                        
+                        <p class="font-bold text-white">My name is Marcus Freeman.</p>
+                        <p>I’m 41 years old, I live in Los Angeles, California, and I am a police officer.</p>
+                        <p>I say that first because in 2040, identity isn’t something you casually reveal anymore. Names are copied. Faces are generated. Voices are cloned. But the role I occupy — police officer — still carries expectations, authority, and consequences. And it places me at the center of a world where trust in digital information has almost completely collapsed.</p>
+                        <p>This diary exists because I no longer trust the systems that claim to remember my life for me. Every moment of my day is already recorded somewhere. My patrol routes. My biometric data. My heart rate during high-stress encounters. My facial expressions. Even my hesitation is measured. The department calls it transparency. Technology companies call it innovation. Politicians call it safety.</p>
+                        <p>But I’ve learned that when everything is recorded digitally, everything can be changed digitally too. So this diary is my refusal to let a machine tell my story. These words aren’t filtered. They aren’t summarized. They aren’t optimized for engagement. They are spoken slowly, intentionally, and imperfectly — which makes them human.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">Work and Education in 2040: Policing Inside a Machine</h5>
+                        <p>Every shift begins with submission. I step into a fully autonomous patrol car and place my hand against the biometric scanner. The system confirms my identity using layered verification — fingerprint patterns, facial structure, pulse rhythm, and emotional baseline. The car doesn’t just confirm who I am. It confirms whether I’m fit to operate within the system that day.</p>
+                        <p>Once approved, the doors lock automatically. The car merges into traffic without my input. I don’t choose where I patrol anymore. The city decides for me. Los Angeles no longer relies on human judgment to distribute police presence. Instead, an interconnected network of AI surveillance drones, predictive crime software, and behavioral analysis models determines which neighborhoods need monitoring and when. The city watches itself now.</p>
+                        <p>Traffic enforcement happens without human involvement. Speed-check systems built into the patrol car constantly scan surrounding vehicles. Speed, emissions, steering patterns, braking behavior — all analyzed in real time. If a driver violates the law, the citation is generated automatically. No warning. No conversation. No discretion. Efficiency replaced empathy.</p>
+                        <p>Above the streets, drones never stop moving. They don’t just look for crimes; they look for potential crimes. Movements that resemble past incidents. Gatherings that statistically correlate with unrest. Individuals whose behavior deviates from algorithmic norms. Crime is no longer something we respond to. It’s something the system predicts.</p>
+                        <p>Some officers never leave their cars. They wait for alerts. Follow instructions. Confirm decisions already made by algorithms. Training academies no longer focus on instinct or situational awareness. Instead, recruits learn interface navigation, compliance protocols, and how to interpret AI-generated risk scores.</p>
+                        <p>Education changed with it. Police training is now almost entirely simulation-based. Recruits interact with AI-generated scenarios that adapt in real time to biometric responses. Stress is measured. Emotional reactions are categorized. Human instructors are rare — expensive and considered inefficient.</p>
+                        <p>Entire professions vanished because of this shift. Dispatchers were replaced by automated call triage systems. Evidence analysts disappeared once AI could sort footage instantly. Report clerks became obsolete when case files began writing themselves. Even some legal roles faded. AI systems now generate optimized legal narratives faster than humans ever could.</p>
+                        <p>New jobs emerged in their place — jobs that never should have needed to exist. One of the most common is AI Compliance Officer. Their responsibility isn’t stopping crime. It’s reviewing automated arrests to ensure algorithms didn’t violate civil rights. Humans supervising machines that were supposed to remove human error. That contradiction defines 2040.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">AR Bodycam Glasses and the Illusion of Objectivity</h5>
+                        <p>My body camera no longer clips to my uniform. It exists as a pair of AI-assisted AR glasses. When I put them on, reality changes instantly. Digital overlays flood my vision. Facial recognition boxes lock onto people around me. Names appear beside faces. Criminal histories scroll in the margins. Emotional analysis indicators fluctuate based on micro-expressions.</p>
+                        <p>Green outlines mean low risk. Yellow means observe. Red means intervene.</p>
+                        <p>The glasses don’t understand fear. They understand probability. They don’t see desperation. They see data. Every glance I make is recorded. Every pause. Every shift in tone. My stress levels are monitored continuously. The footage uploads instantly to department servers and external oversight agencies.</p>
+                        <p>The public was told this technology would ensure accountability. What it ensured instead was constant surveillance. Most officers trust the system completely. They say it’s objective. Unbiased. Immune to emotion. But AI doesn’t eliminate bias. It preserves it. It’s trained on historical data — data shaped by flawed decisions, unequal enforcement, and incomplete records. The system doesn’t question its inputs. It amplifies them. That’s why I don’t rely on it alone.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">The Handwritten Logbook</h5>
+                        <p>I carry a small handwritten logbook in my pocket every day. Pen. Paper. Ink. No cloud storage. No syncing. No edits.</p>
+                        <p>I write down times, locations, license plates, suspect descriptions, conversations, and decisions exactly as they happen. My handwriting is messy. My notes are imperfect. That imperfection is the point. If digital footage ever contradicts my notes in court, I know something was altered.</p>
+                        <p>My notebook can’t be hacked. It can’t be deepfaked. It can’t be quietly corrected overnight. Other officers call it outdated. Inefficient. Some joke that I’m afraid of technology. They’re wrong. I’m afraid of trusting it too much. In a world dominated by artificial intelligence, my logbook is the only thing I trust completely.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">Human Relationships in a World of Digital Doubt</h5>
+                        <p>The most important person in my life is my wife. In 2040, maintaining real human connection takes effort. Digital identities can be copied. Voices can be cloned. Faces can be generated convincingly enough to fool even trained professionals.</p>
+                        <p>Text messages feel meaningless now. Social feeds are filled with bots, synthetic personalities, and AI-generated optimism designed to keep people scrolling. We don’t rely on that. We talk. I use a handheld iPhone 32, equipped with layered biometric verification and real-time location tracking. Before I trust a call, the device confirms vocal signatures, movement consistency, and behavioral patterns.</p>
+                        <p>It sounds extreme. But hearing her voice — knowing it’s real — matters more than any image or message ever could. Friendships have changed too. Many people prefer AI companions now. Programs designed to listen perfectly, agree consistently, and never challenge emotions. Real people are unpredictable. Messy. Harder to trust. But that unpredictability is what makes them real. Digital mistrust didn’t destroy relationships. It made them intentional.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">News, Science, and the Collapse of Shared Reality</h5>
+                        <p>When major events happen now, I don’t believe them immediately. Last year, alerts flooded my dashboard before sunrise: Massive coastal flooding across Southern California. Every channel showed something different. Some showed burning buildings. Others showed pristine beaches untouched by water. Some blamed experimental climate manipulation technology.</p>
+                        <p>Most of it was fabricated. Generated from archived satellite imagery, predictive climate models, and emotionally optimized visuals.</p>
+                        <p>I waited. I checked encrypted government alerts. Authenticated drone feeds. Direct confirmation from patrol units I trusted. Only when three independent systems aligned did I accept the truth. The flood was real — but exaggerated beyond recognition online.</p>
+                        <p>That’s how news works now. Facts don’t spread. Fear does. Algorithms reward spectacle, not accuracy. People don’t ask, “Is this true?” anymore. They ask, “Is this viral?” By the time corrections arrive, the emotional damage is already done. In 2040, reality doesn’t disappear. It just arrives too late.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">The Moment I Chose to Trust Myself</h5>
+                        <p>There’s one entry in my logbook I reread often. During a routine patrol, my AR glasses flagged a teenager as a known offender. Same height. Similar facial structure. High threat probability. The system outlined him in red. Everything in my vision told me to act.</p>
+                        <p>Instead, I paused. I disabled the overlays. I asked questions. I listened. The system had matched him to someone else. Wrong person. Wrong life. If I had trusted the machine completely, that kid would’ve been arrested — or worse.</p>
+                        <p>That night, I wrote one sentence: “Human judgment prevented error.” That sentence reminds me why I slow down. Why I verify. Why I trust myself last — but still trust myself at all. AI sees patterns. Not people. It remembers data. Not context.</p>
+
+                        <h5 class="text-cyan-500 font-bold uppercase border-b border-cyan-900/30 pb-1 w-max">Adapting to a Broken Digital World</h5>
+                        <p>People ask how humans adapt when trust in digital information collapses. The answer isn’t better technology. It’s restraint. It’s knowing when to pause. When to question. When to step outside the system and rely on your own senses.</p>
+                        <p>My logbook looks outdated. But it’s never lied to me. This diary exists for the same reason. Because in a future filled with artificial voices, fabricated memories, and synthetic truths, being human is an act of resistance.</p>
+                        <p class="font-bold text-white border-t border-cyan-900 pt-4 mt-4">I am Marcus Freeman. Police officer. Witness. Human. And this is my record.</p>
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -400,6 +711,24 @@
     </footer>
 
     <script>
+        // Splash Screen Logic
+        function enterSite() {
+            const splash = document.getElementById('splash-screen');
+            const mainBody = document.getElementById('main-body');
+            
+            // Fade out
+            splash.style.transition = 'opacity 1s ease';
+            splash.style.opacity = '0';
+            
+            // Allow scrolling
+            mainBody.classList.remove('overflow-hidden');
+            
+            // Remove from DOM after fade
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 1000);
+        }
+
         // Clock Logic
         function updateClock() {
             const now = new Date();
@@ -415,19 +744,38 @@
         function switchTab(tabName) {
             const profileContent = document.getElementById('profile-content');
             const diaryContent = document.getElementById('diary-content');
+            const toolsContent = document.getElementById('tools-content');
+            const videoContent = document.getElementById('video-content');
+            
             const btnProfile = document.getElementById('btn-profile');
             const btnDiary = document.getElementById('btn-diary');
+            const btnTools = document.getElementById('btn-tools');
+            const btnVideo = document.getElementById('btn-video');
 
+            // Reset all
+            profileContent.classList.add('hidden-tab');
+            diaryContent.classList.add('hidden-tab');
+            toolsContent.classList.add('hidden-tab');
+            videoContent.classList.add('hidden-tab');
+            
+            btnProfile.classList.remove('active');
+            btnDiary.classList.remove('active');
+            btnTools.classList.remove('active');
+            btnVideo.classList.remove('active');
+
+            // Activate Selected
             if (tabName === 'profile') {
                 profileContent.classList.remove('hidden-tab');
-                diaryContent.classList.add('hidden-tab');
                 btnProfile.classList.add('active');
-                btnDiary.classList.remove('active');
-            } else {
-                profileContent.classList.add('hidden-tab');
+            } else if (tabName === 'diary') {
                 diaryContent.classList.remove('hidden-tab');
-                btnProfile.classList.remove('active');
                 btnDiary.classList.add('active');
+            } else if (tabName === 'tools') {
+                toolsContent.classList.remove('hidden-tab');
+                btnTools.classList.add('active');
+            } else if (tabName === 'video') {
+                videoContent.classList.remove('hidden-tab');
+                btnVideo.classList.add('active');
             }
         }
     </script>
